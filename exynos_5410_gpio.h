@@ -4,6 +4,10 @@
 //Caller should avoid calling this if exynos_5410_gpio_initialized is 1.
 void exynos_5410_gpio_init();
 void exynos_5410_gpio_destroy();
+
+// Useful only for library developers, returns a raw register value (from the mapped page)
+unsigned int exynos_5410_gpio_read_raw_reg(unsigned int offset);
+
 // bank_base is the address of the first register for the GPIO bank (CON)
 // the 8 lowest bits of bitmask determine which bits in the bank are affected by this call
 // output should be 1 to make all affected bits outputs, 0 to make them all inputs

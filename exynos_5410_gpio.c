@@ -14,7 +14,7 @@
 #define EXYNOS_5410_GPIO_REG_BASE_ADDR 0x13400000
 // For a given bank of GPIOs, the registers are laid out in memory as: CON DATA UPD DRIVESTR
 #define EXYNOS_GPIO_CON_REG_OFFSET 0 //CON (data direction) register
-#define EXYNOS_GPIO_DATA_OFFSET 4 // Data register
+#define EXYNOS_GPIO_DATA_REG_OFFSET 4 // Data register
 #define EXYNOS_GPIO_UPD_REG_OFFSET 8 //UPD (pullup/pulldown) register
 #define EXYNOS_GPIO_DRIVE_STRENGTH_REG_OFFSET 12 //Drive strength register
 
@@ -52,6 +52,12 @@ void exynos_5410_gpio_destroy() {
   exynos_5410_gpio_initialized = 0;
 }
 
+// Useful only for library developers, returns a raw register value (from the mapped page)
+unsigned int exynos_5410_gpio_read_raw_reg(unsigned int offset) {
+	volatile uint32_t *addr = (volatile uint32_t *)((char *)exynos_5410_gpio_mapbase + offset);
+	return *addr;
+}
+
 // bank_base is the address of the first register for the GPIO bank (CON)
 // the 8 lowest bits of bitmask determine which bits in the bank are affected by this call
 // output should be 1 to make all affected bits outputs, 0 to make them all inputs
@@ -80,13 +86,13 @@ void exynos_5410_gpio_setup_pin(unsigned int bank_offset, unsigned int bitmask, 
 }
 
 unsigned int exynos_5410_gpio_read(unsigned int bank_offset) {
-	volatile uint32_t *addr = (volatile uint32_t *)((char *)exynos_5410_gpio_mapbase + bank_offset + EXYNOS_GPIO_DATA_OFFSET); //DATA register
+	volatile uint32_t *addr = (volatile uint32_t *)((char *)exynos_5410_gpio_mapbase + bank_offset + EXYNOS_GPIO_DATA_REG_OFFSET); //DATA register
 	return *addr;
 }
 
 //Only write to the bits indicated by mask (performs RMW)
 void exynos_5410_gpio_write_mask(unsigned int bank_offset, unsigned int data, unsigned int mask) {
-	volatile uint32_t *addr = (volatile uint32_t *)((char *)exynos_5410_gpio_mapbase + bank_offset + EXYNOS_GPIO_DATA_OFFSET); //DATA register
+	volatile uint32_t *addr = (volatile uint32_t *)((char *)exynos_5410_gpio_mapbase + bank_offset + EXYNOS_GPIO_DATA_REG_OFFSET); //DATA register
 	uint32_t val = *addr;
 	val &= ~mask;
 	data &= ~mask; //TODO don't need to do this if we assume data has unused bits zeroed out.
@@ -96,7 +102,7 @@ void exynos_5410_gpio_write_mask(unsigned int bank_offset, unsigned int data, un
 
 //Writes to all bits (no RMW)
 void exynos_5410_gpio_write(unsigned int bank_offset, unsigned int data) {
-	volatile uint32_t *addr = (volatile uint32_t *)((char *)exynos_5410_gpio_mapbase + bank_offset + EXYNOS_GPIO_DATA_OFFSET); //DATA register
+	volatile uint32_t *addr = (volatile uint32_t *)((char *)exynos_5410_gpio_mapbase + bank_offset + EXYNOS_GPIO_DATA_REG_OFFSET); //DATA register
 	*addr = data;
 }
 
