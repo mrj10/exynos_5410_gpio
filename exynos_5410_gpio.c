@@ -97,9 +97,13 @@ unsigned int exynos_5410_gpio_read(unsigned int bank_offset) {
 void exynos_5410_gpio_write_mask(unsigned int bank_offset, unsigned int data, unsigned int mask) {
 	volatile uint32_t *addr = (volatile uint32_t *)((char *)exynos_5410_gpio_mapbase + bank_offset + EXYNOS_GPIO_DATA_REG_OFFSET); //DATA register
 	uint32_t val = *addr;
+	printf("val 1 0x%08X\n", val);
 	val &= ~mask;
+	printf("val 2 0x%08X\n", val);
 	data &= ~mask; //TODO don't need to do this if we assume data has unused bits zeroed out.
+	printf("data 0x%08X\n", data);
 	val |= data;
+	printf("val 3 0x%08X\n", val);
 	*addr = val;
 }
 
