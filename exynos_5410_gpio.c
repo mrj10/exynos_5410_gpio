@@ -121,8 +121,8 @@ static inline void odroid_xu_pin_lookup(unsigned int pin_index, unsigned int *ba
 		case 23: *bank_offset = 0x0C40; *bit_index = 2; break;
 		case 24: *bank_offset = 0x0C40; *bit_index = 1; break;
 		case 25: *bank_offset = 0x0C20; *bit_index = 7; break;
-		case 26: *bank_offset = 0x0C20; *bit_index = 0; break;
-		case 27: *bank_offset = 0x0C40; *bit_index = 1; break;
+		case 26: *bank_offset = 0x0C40; *bit_index = 0; break;
+		case 27: *bank_offset = 0x0C60; *bit_index = 1; break;
 		default: FATAL; break;
 	}
 }

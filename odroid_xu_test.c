@@ -23,7 +23,10 @@ int main(int argc, char *argv[]) {
 	printf("0x0C40 bank DATA register = 0x%08X\n", exynos_5410_gpio_read_raw_reg(0x0C40 + EXYNOS_GPIO_DATA_REG_OFFSET));
 	printf("0x0C40 bank UPD register = 0x%08X\n", exynos_5410_gpio_read_raw_reg(0x0C40 + EXYNOS_GPIO_UPD_REG_OFFSET));
 	printf("0x0C40 bank DRIVE_STRENGTH register = 0x%08X\n", exynos_5410_gpio_read_raw_reg(0x0C40 + EXYNOS_GPIO_DRIVE_STRENGTH_REG_OFFSET));
-
+	printf("0x0C60 bank CON register = 0x%08X\n", exynos_5410_gpio_read_raw_reg(0x0C60 + EXYNOS_GPIO_CON_REG_OFFSET));
+	printf("0x0C60 bank DATA register = 0x%08X\n", exynos_5410_gpio_read_raw_reg(0x0C60 + EXYNOS_GPIO_DATA_REG_OFFSET));
+	printf("0x0C60 bank UPD register = 0x%08X\n", exynos_5410_gpio_read_raw_reg(0x0C60 + EXYNOS_GPIO_UPD_REG_OFFSET));
+	printf("0x0C60 bank DRIVE_STRENGTH register = 0x%08X\n", exynos_5410_gpio_read_raw_reg(0x0C60 + EXYNOS_GPIO_DRIVE_STRENGTH_REG_OFFSET));
 	for(int i = 13; i <= 27; i++) {
 		printf("Pin %d = %u\n", i, odroid_xu_gpio_read(i));
 	}
