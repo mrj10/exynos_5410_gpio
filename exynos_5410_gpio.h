@@ -8,7 +8,7 @@ void exynos_5410_gpio_destroy();
 // Useful only for library developers, returns a raw register value (from the mapped page)
 unsigned int exynos_5410_gpio_read_raw_reg(unsigned int offset);
 // Write a raw register value (from the mapped page)
-void exynos_5410_gpio_read_raw_reg(unsigned int offset, unsigned int data);
+void exynos_5410_gpio_write_raw_reg(unsigned int offset, unsigned int data);
 
 // bank_base is the address of the first register for the GPIO bank (CON)
 // the 8 lowest bits of bitmask determine which bits in the bank are affected by this call
