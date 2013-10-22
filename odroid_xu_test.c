@@ -36,8 +36,17 @@ int main(int argc, char *argv[]) {
 	//print_all_gpio_info();
 	odroid_xu_gpio_setup_all_output();
 
-	for(int i = 0; i < 10000000; i++)
-		odroid_xu_gpio_toggle(27);
+	//Method 1 -- Using the library's helper functions
+	//for(int i = 0; i < 10000000; i++)
+	//	odroid_xu_gpio_toggle(27);
+
+	//Method 2 -- Memoizing the offset and other bits in the register and just performing register writes
+	//(Should be faster)
+	unsigned int regval = exynos_5410_gpio_read_raw_reg(0x0C60 + EXYNOS_GPIO_DATA_REG_OFFSET);
+	for(int i = 0; i < 5000000; i++) {
+		exynos_5410_gpio_write_raw_reg(0x0C60 + EXYNOS_GPIO_DATA_REG_OFFSET, regval ^ (1U << 1));
+		exynos_5410_gpio_write_raw_reg(0x0C60 + EXYNOS_GPIO_DATA_REG_OFFSET, regval);
+	}
 
 	exynos_5410_gpio_destroy();
 	return 0;

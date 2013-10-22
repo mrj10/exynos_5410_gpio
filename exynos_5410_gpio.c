@@ -52,11 +52,18 @@ void exynos_5410_gpio_destroy() {
   exynos_5410_gpio_initialized = 0;
 }
 
-// Useful only for library developers, returns a raw register value (from the mapped page)
+// Read a raw register value (from the mapped page)
 unsigned int exynos_5410_gpio_read_raw_reg(unsigned int offset) {
 	volatile uint32_t *addr = (volatile uint32_t *)((char *)exynos_5410_gpio_mapbase + offset);
 	return *addr;
 }
+
+// Write a raw register value (from the mapped page)
+void exynos_5410_gpio_read_raw_reg(unsigned int offset, unsigned int data) {
+	volatile uint32_t *addr = (volatile uint32_t *)((char *)exynos_5410_gpio_mapbase + offset);
+	*addr = data;
+}
+
 
 // bank_base is the address of the first register for the GPIO bank (CON)
 // the 8 lowest bits of bitmask determine which bits in the bank are affected by this call
