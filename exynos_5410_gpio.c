@@ -70,7 +70,8 @@ void exynos_5410_gpio_setup_pin(unsigned int bank_offset, unsigned int bitmask, 
 	for(i = 0; i < 8; i++) {
 		if(bitmask & (1U << i)) {
 			con_val &= ~(0xFFFFU << (4*i));
-			con_val |= (0x0001U << (4*i));
+			if(output)
+				con_val |= (1U << (4*i));
 		}
 	}
 	*addr = con_val;
@@ -139,4 +140,21 @@ void odroid_xu_gpio_write(unsigned int pin_index, unsigned int data) {
 	unsigned int bank_offset, bit_index;
 	odroid_xu_pin_lookup(pin_index, &bank_offset, &bit_index);
 	exynos_5410_gpio_write_mask(bank_offset, (1U << bit_index), (data << bit_index));
+}
+
+void odroid_xu_gpio_setup_all_output() {
+	unsigned int bank_offset, bit_index;
+	for(int i = 13; i < 27; i++) {
+		odroid_xu_pin_lookup(i, &bank_offset, &bit_index);
+		exynos_5410_gpio_setup_pin(bank_offset, 1U << bit_index, 1 /*output*/, 0 /*no pullup/pulldown*/);
+	}
+}
+
+//pullup = 0 for no pullup/pulldown, 1 for pullup, 2 for pulldown
+void odroid_xu_gpio_setup_all_input(unsigned int pullup) {
+	unsigned int bank_offset, bit_index;
+	for(int i = 13; i < 27; i++) {
+		odroid_xu_pin_lookup(i, &bank_offset, &bit_index);
+		exynos_5410_gpio_setup_pin(bank_offset, 1U << bit_index, 0 /*input*/, pullup);
+	}
 }
