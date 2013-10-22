@@ -69,7 +69,7 @@ void exynos_5410_gpio_setup_pin(unsigned int bank_offset, unsigned int bitmask, 
 	int i;
 	for(i = 0; i < 8; i++) {
 		if(bitmask & (1U << i)) {
-			con_val &= ~(0xFFFFU << (4*i));
+			con_val &= ~(0xFU << (4*i));
 			if(output)
 				con_val |= (1U << (4*i));
 		}
