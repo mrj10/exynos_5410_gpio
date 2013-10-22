@@ -59,7 +59,7 @@ unsigned int exynos_5410_gpio_read_raw_reg(unsigned int offset) {
 }
 
 // Write a raw register value (from the mapped page)
-void exynos_5410_gpio_read_raw_reg(unsigned int offset, unsigned int data) {
+void exynos_5410_gpio_write_raw_reg(unsigned int offset, unsigned int data) {
 	volatile uint32_t *addr = (volatile uint32_t *)((char *)exynos_5410_gpio_mapbase + offset);
 	*addr = data;
 }
