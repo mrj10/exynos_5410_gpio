@@ -50,6 +50,13 @@ int main(int argc, char *argv[]) {
 		printf("Pin %d = %u\n", i, odroid_xu_gpio_read(i));
 	}
 
+	odroid_xu_gpio_toggle(27);
+
+	printf("Toggled pin 27\n");
+	for(int i = 13; i <= 27; i++) {
+		printf("Pin %d = %u\n", i, odroid_xu_gpio_read(i));
+	}
+
 	exynos_5410_gpio_destroy();
 	return 0;
 }

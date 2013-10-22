@@ -26,6 +26,6 @@ void odroid_xu_gpio_write(unsigned int pin_index, unsigned int data);
 void odroid_xu_gpio_setup_all_output();
 //pullup = 0 for no pullup/pulldown, 1 for pullup, 2 for pulldown
 void odroid_xu_gpio_setup_all_input(unsigned int pullup);
-
+void odroid_xu_gpio_toggle(unsigned int pin_index);
 
 #endif //#ifndef __EXYNOS_5410_GPIO_H__

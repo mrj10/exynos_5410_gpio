@@ -160,3 +160,7 @@ void odroid_xu_gpio_setup_all_input(unsigned int pullup) {
 		exynos_5410_gpio_setup_pin(bank_offset, 1U << bit_index, 0 /*input*/, pullup);
 	}
 }
+
+void odroid_xu_gpio_toggle(unsigned int pin_index) {
+	odroid_xu_gpio_write(pin_index, odroid_xu_gpio_read(pin_index) ^ 1U);
+}
