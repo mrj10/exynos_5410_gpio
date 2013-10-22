@@ -64,7 +64,6 @@ void exynos_5410_gpio_write_raw_reg(unsigned int offset, unsigned int data) {
 	*addr = data;
 }
 
-
 // bank_base is the address of the first register for the GPIO bank (CON)
 // the 8 lowest bits of bitmask determine which bits in the bank are affected by this call
 // output should be 1 to make all affected bits outputs, 0 to make them all inputs
