@@ -19,8 +19,8 @@
 #define EXYNOS_GPIO_DRIVE_STRENGTH_REG_OFFSET 12 //Drive strength register
 
 #define DISABLE_PULLUP_PULLDOWN 0x0 // No PU or PD
-#define ENABLE_PULLUP 0x1 // PU resistor
-#define ENABLE_PULLDOWN 0x2 // PD resistor
+#define ENABLE_PULLDOWN 0x1 // PD resistor
+#define ENABLE_PULLUP 0x2 // PU resistor
 
 #define FATAL do { fprintf(stderr, "Error at line %d, file %s (%d) [%s]\n", \
 __LINE__, __FILE__, errno, strerror(errno)); exit(1); } while(0)
@@ -61,17 +61,19 @@ unsigned int exynos_5410_gpio_read_raw_reg(unsigned int offset) {
 // bank_base is the address of the first register for the GPIO bank (CON)
 // the 8 lowest bits of bitmask determine which bits in the bank are affected by this call
 // output should be 1 to make all affected bits outputs, 0 to make them all inputs
-// pullup should be 0 to have no pullup or pulldown for these bits, 1 to have a pullup, and 2 to have a pulldown
+// pullup should be 0 to have no pullup or pulldown for these bits, 1 to have a pulldown, and 2 to have a pullup
 void exynos_5410_gpio_setup_pin(unsigned int bank_offset, unsigned int bitmask, unsigned int output, unsigned int pullup) {
 	if(exynos_5410_gpio_initialized != 1) FATAL;
+	if(!(pullup == 0U || pullup == 1U || pullup == 2U)) FATAL;
+	if(!(output == 0 || output == 1)) FATAL;
+
 	volatile uint32_t *addr = (volatile uint32_t *)((char *)exynos_5410_gpio_mapbase + bank_offset); //CON register
 	uint32_t con_val = *addr;
 	int i;
 	for(i = 0; i < 8; i++) {
 		if(bitmask & (1U << i)) {
 			con_val &= ~(0xFU << (4*i));
-			if(output)
-				con_val |= (1U << (4*i));
+			con_val |= (output << (4*i));
 		}
 	}
 	*addr = con_val;
@@ -150,7 +152,7 @@ void odroid_xu_gpio_setup_all_output() {
 	}
 }
 
-//pullup = 0 for no pullup/pulldown, 1 for pullup, 2 for pulldown
+//pullup = 0 for no pullup/pulldown, 1 for pulldown, 2 for pullup
 void odroid_xu_gpio_setup_all_input(unsigned int pullup) {
 	unsigned int bank_offset, bit_index;
 	for(int i = 13; i < 27; i++) {
