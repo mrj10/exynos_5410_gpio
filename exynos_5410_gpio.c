@@ -146,7 +146,7 @@ void odroid_xu_gpio_write(unsigned int pin_index, unsigned int data) {
 
 void odroid_xu_gpio_setup_all_output() {
 	unsigned int bank_offset, bit_index;
-	for(int i = 13; i < 27; i++) {
+	for(int i = 13; i <= 27; i++) {
 		odroid_xu_pin_lookup(i, &bank_offset, &bit_index);
 		exynos_5410_gpio_setup_pin(bank_offset, 1U << bit_index, 1 /*output*/, 0 /*no pullup/pulldown*/);
 	}
@@ -155,7 +155,7 @@ void odroid_xu_gpio_setup_all_output() {
 //pullup = 0 for no pullup/pulldown, 1 for pulldown, 2 for pullup
 void odroid_xu_gpio_setup_all_input(unsigned int pullup) {
 	unsigned int bank_offset, bit_index;
-	for(int i = 13; i < 27; i++) {
+	for(int i = 13; i <= 27; i++) {
 		odroid_xu_pin_lookup(i, &bank_offset, &bit_index);
 		exynos_5410_gpio_setup_pin(bank_offset, 1U << bit_index, 0 /*input*/, pullup);
 	}
