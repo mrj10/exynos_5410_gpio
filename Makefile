@@ -1,6 +1,6 @@
 PROJECT = exynos_5410_gpio.a
 OBJECTS = exynos_5410_gpio.o
-CFLAGS  = -Wall -pedantic -Werror -O3 -mcpu=cortex-a15
+CFLAGS  = -std=c99 -Wall -pedantic -Werror -O3 
 
 all: $(PROJECT)
 
@@ -8,4 +8,4 @@ all: $(PROJECT)
 	gcc -c $(CFLAGS) $<
 
 $(PROJECT): $(OBJECTS)
-	libtool -o $(PROJECT) -static $(OBJECTS)
+	ar rcs $@ $^

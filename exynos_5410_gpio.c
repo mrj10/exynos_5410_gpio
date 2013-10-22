@@ -32,7 +32,7 @@ static int exynos_5410_gpio_initialized = 0;
 static void *exynos_5410_gpio_mapbase;
 
 //Caller should avoid calling this if exynos_5410_gpio_initialized is 1.
-static void exynos_5410_gpio_init() {
+void exynos_5410_gpio_init() {
   int fd;
 
   if(exynos_5410_gpio_initialized != 0) FATAL;
@@ -46,7 +46,7 @@ static void exynos_5410_gpio_init() {
   exynos_5410_gpio_initialized = 1;
 }
 
-static void exynos_5410_gpio_destroy() {
+void exynos_5410_gpio_destroy() {
   if(exynos_5410_gpio_initialized != 1) FATAL;
   if(munmap(exynos_5410_gpio_mapbase, MAP_SIZE) == -1) FATAL;
   exynos_5410_gpio_initialized = 0;
@@ -56,9 +56,9 @@ static void exynos_5410_gpio_destroy() {
 // the 8 lowest bits of bitmask determine which bits in the bank are affected by this call
 // output should be 1 to make all affected bits outputs, 0 to make them all inputs
 // pullup should be 0 to have no pullup or pulldown for these bits, 1 to have a pullup, and 2 to have a pulldown
-static void exynos_5410_gpio_setup_pin(unsigned int bank_offset, unsigned int bitmask, unsigned int output, unsigned int pullup) {
+void exynos_5410_gpio_setup_pin(unsigned int bank_offset, unsigned int bitmask, unsigned int output, unsigned int pullup) {
 	if(exynos_5410_gpio_initialized != 1) FATAL;
-	volatile uint32_t *addr = (exynos_5410_gpio_mapbase + bank_offset); //CON register
+	volatile uint32_t *addr = (volatile uint32_t *)((char *)exynos_5410_gpio_mapbase + bank_offset); //CON register
 	uint32_t con_val = *addr;
 	int i;
 	for(i = 0; i < 8; i++) {
@@ -79,14 +79,14 @@ static void exynos_5410_gpio_setup_pin(unsigned int bank_offset, unsigned int bi
 	*addr = upd_val;
 }
 
-static unsigned int exynos_5410_gpio_read(unsigned int bank_offset) {
-	volatile uint32_t *addr = (exynos_5410_gpio_mapbase + bank_offset + EXYNOS_GPIO_DATA_OFFSET); //DATA register
+unsigned int exynos_5410_gpio_read(unsigned int bank_offset) {
+	volatile uint32_t *addr = (volatile uint32_t *)((char *)exynos_5410_gpio_mapbase + bank_offset + EXYNOS_GPIO_DATA_OFFSET); //DATA register
 	return *addr;
 }
 
 //Only write to the bits indicated by mask (performs RMW)
-static void exynos_5410_gpio_write_mask(unsigned int bank_offset, unsigned int data, unsigned int mask) {
-	volatile uint32_t *addr = (exynos_5410_gpio_mapbase + bank_offset + EXYNOS_GPIO_DATA_OFFSET); //DATA register
+void exynos_5410_gpio_write_mask(unsigned int bank_offset, unsigned int data, unsigned int mask) {
+	volatile uint32_t *addr = (volatile uint32_t *)((char *)exynos_5410_gpio_mapbase + bank_offset + EXYNOS_GPIO_DATA_OFFSET); //DATA register
 	uint32_t val = *addr;
 	val &= ~mask;
 	data &= ~mask; //TODO don't need to do this if we assume data has unused bits zeroed out.
@@ -95,8 +95,8 @@ static void exynos_5410_gpio_write_mask(unsigned int bank_offset, unsigned int d
 }
 
 //Writes to all bits (no RMW)
-static void exynos_5410_gpio_write(unsigned int bank_offset, unsigned int data) {
-	volatile uint32_t *addr = (exynos_5410_gpio_mapbase + bank_offset + EXYNOS_GPIO_DATA_OFFSET); //DATA register
+void exynos_5410_gpio_write(unsigned int bank_offset, unsigned int data) {
+	volatile uint32_t *addr = (volatile uint32_t *)((char *)exynos_5410_gpio_mapbase + bank_offset + EXYNOS_GPIO_DATA_OFFSET); //DATA register
 	*addr = data;
 }
 
@@ -122,14 +122,14 @@ static inline void odroid_xu_pin_lookup(unsigned int pin_index, unsigned int *ba
 }
 
 //Read a single bit according to the pin numbers on the ODROID-XU/ODROID-XU+E CON10 connector
-static unsigned odroid_xu_gpio_read(unsigned int pin_index) {
+unsigned int odroid_xu_gpio_read(unsigned int pin_index) {
 	unsigned int bank_offset, bit_index;
 	odroid_xu_pin_lookup(pin_index, &bank_offset, &bit_index);
 	return (exynos_5410_gpio_read(bank_offset) >> bit_index) & 0x1;
 }
 
 //Write a single bit according to the pin numbers on the ODROID-XU/ODROID-XU+E CON10 connector (only the lsb of data is used)
-static unsigned odroid_xu_gpio_write(unsigned int pin_index, unsigned int data) {
+void odroid_xu_gpio_write(unsigned int pin_index, unsigned int data) {
 	unsigned int bank_offset, bit_index;
 	odroid_xu_pin_lookup(pin_index, &bank_offset, &bit_index);
 	exynos_5410_gpio_write_mask(bank_offset, (1U << bit_index), (data << bit_index));
