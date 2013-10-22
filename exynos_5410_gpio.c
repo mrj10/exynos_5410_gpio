@@ -100,7 +100,7 @@ void exynos_5410_gpio_write_mask(unsigned int bank_offset, unsigned int data, un
 	printf("val 1 0x%08X\n", val);
 	val &= ~mask;
 	printf("val 2 0x%08X\n", val);
-	data &= ~mask; //TODO don't need to do this if we assume data has unused bits zeroed out.
+	data &= mask; //TODO don't need to do this if we assume data has unused bits zeroed out.
 	printf("data 0x%08X\n", data);
 	val |= data;
 	printf("val 3 0x%08X\n", val);
