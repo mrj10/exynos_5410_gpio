@@ -141,7 +141,7 @@ unsigned int odroid_xu_gpio_read(unsigned int pin_index) {
 void odroid_xu_gpio_write(unsigned int pin_index, unsigned int data) {
 	unsigned int bank_offset, bit_index;
 	odroid_xu_pin_lookup(pin_index, &bank_offset, &bit_index);
-	exynos_5410_gpio_write_mask(bank_offset, (1U << bit_index), (data << bit_index));
+	exynos_5410_gpio_write_mask(bank_offset, ((data & 1U) << bit_index), (1U << bit_index));
 }
 
 void odroid_xu_gpio_setup_all_output() {
@@ -168,5 +168,5 @@ void odroid_xu_gpio_toggle(unsigned int pin_index) {
 	printf("d before: 0x%08X\n", d);
 	d ^= (1U << bit_index);
 	printf("d after: 0x%08X\n", d);
-	exynos_5410_gpio_write_mask(bank_offset, (1U << bit_index), d);
+	exynos_5410_gpio_write_mask(bank_offset, d, (1U << bit_index));
 }
