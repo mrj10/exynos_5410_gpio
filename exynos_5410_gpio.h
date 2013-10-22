@@ -23,4 +23,9 @@ unsigned int odroid_xu_gpio_read(unsigned int pin_index);
 //Write a single bit according to the pin numbers on the ODROID-XU/ODROID-XU+E CON10 connector (only the lsb of data is used)
 void odroid_xu_gpio_write(unsigned int pin_index, unsigned int data);
 
+void odroid_xu_gpio_setup_all_output();
+//pullup = 0 for no pullup/pulldown, 1 for pullup, 2 for pulldown
+void odroid_xu_gpio_setup_all_input(unsigned int pullup);
+
+
 #endif //#ifndef __EXYNOS_5410_GPIO_H__
