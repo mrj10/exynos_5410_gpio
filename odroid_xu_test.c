@@ -51,7 +51,7 @@ int main(int argc, char *argv[]) {
 	//Method 3 -- Eliminate library call
 	unsigned int regval1 = exynos_5410_gpio_read_raw_reg(0x0C60 + EXYNOS_GPIO_DATA_REG_OFFSET);
 	unsigned int regval2 = regval1 ^ (1U << 1);
-	volatile unsigned int *dataregaddr = (volatile unsigned int *)(exynos_5410_gpio_get_map_base() + 0x0C60 + EXYNOS_GPIO_DATA_REG_OFFSET);
+	volatile unsigned int *dataregaddr = (volatile unsigned int *)((unsigned int)exynos_5410_gpio_get_map_base() + 0x0C60 + EXYNOS_GPIO_DATA_REG_OFFSET);
 	
 	for(int i = 0; i < 1000000; i++) {
 		*dataregaddr = regval1;
