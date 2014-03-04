@@ -10,6 +10,7 @@
 #include <sys/types.h>
 #include <sys/mman.h>
 #include <stdint.h>
+#include "exynos_5410_gpio.h"
 
 #define EXYNOS_5410_GPIO_REG_BASE_ADDR 0x13400000
 // For a given bank of GPIOs, the registers are laid out in memory as: CON DATA UPD DRIVESTR

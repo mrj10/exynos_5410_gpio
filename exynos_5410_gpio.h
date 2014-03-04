@@ -52,4 +52,16 @@ void odroid_xu_gpio_setup_all_output();
 void odroid_xu_gpio_setup_all_input(unsigned int pullup);
 void odroid_xu_gpio_toggle(unsigned int pin_index);
 
+#define EXYNOS_5410_GPIO_PIN(pin_num, offset, bit_num) void odroid_xu_gpio_toggle_ ## pin_num ## ();
+EXYNOS_5410_GPIO_PINS
+#undef EXYNOS_5410_GPIO_PIN
+
+#define EXYNOS_5410_GPIO_PIN(pin_num, offset, bit_num) unsigned int odroid_xu_gpio_read_ ## pin_num ## ();
+EXYNOS_5410_GPIO_PINS
+#undef EXYNOS_5410_GPIO_PIN
+
+#define EXYNOS_5410_GPIO_PIN(pin_num, offset, bit_num) void odroid_xu_gpio_write_ ## pin_num ## (unsigned int data);
+EXYNOS_5410_GPIO_PINS
+#undef EXYNOS_5410_GPIO_PIN
+
 #endif //#ifndef __EXYNOS_5410_GPIO_H__
