@@ -40,8 +40,7 @@ static int exynos_5410_gpio_initialized = 0;
 static void *exynos_5410_gpio_mapbase;
 static int exynos_5410_gpio_lockfile_fd;
 
-//Caller should avoid calling this if exynos_5410_gpio_initialized is 1.
-void exynos_5410_gpio_init() {
+__attribute__((constructor)) static void exynos_5410_gpio_init() {
   int fd;
 
   //Check to make sure we haven't already initialized the library in this process
@@ -60,7 +59,7 @@ void exynos_5410_gpio_init() {
   exynos_5410_gpio_initialized = 1;
 }
 
-void exynos_5410_gpio_destroy() {
+__attribute__((destructor)) static void exynos_5410_gpio_destroy() {
   if(exynos_5410_gpio_initialized != 1) FATAL;
   if(munmap(exynos_5410_gpio_mapbase, MAP_SIZE) == -1) FATAL;
   //Unlink and close lockfile.  The close() will delete it from the filesystem

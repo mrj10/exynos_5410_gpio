@@ -34,7 +34,6 @@ void print_all_gpio_info() {
 }
 
 int main(int argc, char *argv[]) {
-	exynos_5410_gpio_init();
 	//print_all_gpio_info();
 	odroid_xu_gpio_setup_all_output();
 	print_all_gpio_info();
@@ -81,6 +80,5 @@ int main(int argc, char *argv[]) {
 		*dataregaddr = regval2;
 	}
 #endif
-	exynos_5410_gpio_destroy();
 	return 0;
 }
