@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdio.h>
 #include <stdint.h>
 #include <inttypes.h>
 #include "exynos_5410_gpio.h"
@@ -42,7 +43,14 @@ int main(int argc, char *argv[]) {
 	//for(int i = 0; i < 10000000; i++)
 	//	odroid_xu_gpio_toggle(27);
 
-	//Method 2 -- Memoizing the offset and other bits in the register and just performing register writes
+	//Method 2 -- Write 0 and 1 directly to avoid register read
+	//odroid_xu_gpio_write(27, 1);
+	//for(int i = 0; i < 5000000; i++) {
+	//	odroid_xu_gpio_write(27, 0);
+	//	odroid_xu_gpio_write(27, 1);
+	//}
+
+	//Method 3 -- Memoizing the offset and other bits in the register and just performing register writes
 	//(Should be faster)
 	 unsigned int regval = exynos_5410_gpio_read_raw_reg(0x0C60 + EXYNOS_GPIO_DATA_REG_OFFSET);
 	 for(int i = 0; i < 5000000; i++) {
@@ -50,17 +58,21 @@ int main(int argc, char *argv[]) {
 	 	exynos_5410_gpio_write_raw_reg(0x0C60 + EXYNOS_GPIO_DATA_REG_OFFSET, regval);
 	 }
 
-	//Method 3 -- Eliminate library call
+	//Method 4 -- Eliminate library call
 #if 0
 	unsigned int regval1 = exynos_5410_gpio_read_raw_reg(0x0C60 + EXYNOS_GPIO_DATA_REG_OFFSET);
 	unsigned int regval2 = regval1 ^ (1U << 1);
 	volatile unsigned int *dataregaddr = (volatile unsigned int *)((unsigned int)exynos_5410_gpio_get_map_base() + 0x0C60 + EXYNOS_GPIO_DATA_REG_OFFSET);
-	uint32_t t1, t2 = 0;
-	for(int i = 0; i < 1000000; i++) {
-		t1 = rdtsc32();
-		if(t2 != 0)
-			printf("iteration %d, %" PRIu32 " cycles, %f cycles/write\n", i, t2-t1, (float)((t2-t1)/16));
-		t2 = t1;
+	//uint32_t t1, t2 = 0;
+	for(int i = 0; i < 500000; i++) {
+		//t1 = rdtsc32();
+		//if(t2 != 0)
+		//	printf("iteration %d, %" PRIu32 " cycles, %f cycles/write\n", i, t2-t1, (float)((t2-t1)/16));
+		//t2 = t1;
+		*dataregaddr = regval1;
+		*dataregaddr = regval2;
+		*dataregaddr = regval1;
+		*dataregaddr = regval2;
 		*dataregaddr = regval1;
 		*dataregaddr = regval2;
 		*dataregaddr = regval1;
