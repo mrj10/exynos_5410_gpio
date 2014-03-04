@@ -15,6 +15,7 @@
 //TODO add a persistent struct that the user passes in for most calls and contains shadow GPIO register state.
 //We could also keep the struct internal to the library.
 //The objective is to perform masked writes and so forth without having to do a slow GPIO read.
+//The evidence in 10m_toggles.c shows that the GPIO read takes as long or longer than a write, so it more than halves GPIO write throughput.
 
 #define EXYNOS_5410_GPIO_REG_BASE_ADDR 0x13400000
 // For a given bank of GPIOs, the registers are laid out in memory as: CON DATA UPD DRIVESTR
