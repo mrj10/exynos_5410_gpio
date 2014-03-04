@@ -1,3 +1,4 @@
 *.o
 *.a
 odroid_xu_test
+10m_toggles
