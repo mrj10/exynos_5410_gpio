@@ -122,21 +122,9 @@ void exynos_5410_gpio_write(unsigned int bank_offset, unsigned int data) {
 
 static inline void odroid_xu_pin_lookup(unsigned int pin_index, unsigned int *bank_offset, unsigned int *bit_index) {
 	switch(pin_index) {
-		case 13: *bank_offset = 0x0C20; *bit_index = 5; break;
-		case 14: *bank_offset = 0x0C40; *bit_index = 3; break;
-		case 15: *bank_offset = 0x0C20; *bit_index = 2; break;
-		case 16: *bank_offset = 0x0C20; *bit_index = 0; break;
-		case 17: *bank_offset = 0x0C20; *bit_index = 6; break;
-		case 18: *bank_offset = 0x0C20; *bit_index = 3; break;
-		case 19: *bank_offset = 0x0C40; *bit_index = 6; break;
-		case 20: *bank_offset = 0x0C40; *bit_index = 4; break;
-		case 21: *bank_offset = 0x0C40; *bit_index = 5; break;
-		case 22: *bank_offset = 0x0C40; *bit_index = 7; break;
-		case 23: *bank_offset = 0x0C40; *bit_index = 2; break;
-		case 24: *bank_offset = 0x0C40; *bit_index = 1; break;
-		case 25: *bank_offset = 0x0C20; *bit_index = 7; break;
-		case 26: *bank_offset = 0x0C40; *bit_index = 0; break;
-		case 27: *bank_offset = 0x0C60; *bit_index = 1; break;
+		#define EXYNOS_5410_GPIO_PIN(pin_num, offset, bit_num) case pin_num: *bank_offset = offset; *bit_index = bit_num; break;
+		EXYNOS_5410_GPIO_PINS
+		#undef EXYNOS_5410_GPIO_PIN
 		default: FATAL; break;
 	}
 }
@@ -179,3 +167,30 @@ void odroid_xu_gpio_toggle(unsigned int pin_index) {
 	d ^= (1U << bit_index);
 	exynos_5410_gpio_write_mask(bank_offset, d, (1U << bit_index));
 }
+
+//Create specialized functions for each pin to avoid the pin_lookup() call
+#define EXYNOS_5410_GPIO_PIN(pin_num, offset, bit_num) void odroid_xu_gpio_toggle_ ## pin_num ## () \
+	unsigned int bank_offset = offset; \
+	unsigned int bit_index = bit_num; \
+	unsigned int d = exynos_5410_gpio_read(bank_offset); \
+	d ^= (1U << bit_index); \
+	exynos_5410_gpio_write_mask(bank_offset, d, (1U << bit_index)); \
+}
+EXYNOS_5410_GPIO_PINS
+#undef EXYNOS_5410_GPIO_PIN
+
+#define EXYNOS_5410_GPIO_PIN(pin_num, offset, bit_num) unsigned int odroid_xu_gpio_read_ ## pin_num ## () \
+	unsigned int bank_offset = offset; \
+	unsigned int bit_index = bit_num; \
+	return (exynos_5410_gpio_read(bank_offset) >> bit_index) & 0x1; \
+}
+EXYNOS_5410_GPIO_PINS
+#undef EXYNOS_5410_GPIO_PIN
+
+#define EXYNOS_5410_GPIO_PIN(pin_num, offset, bit_num) void odroid_xu_gpio_write_ ## pin_num ## (unsigned int data) \
+	unsigned int bank_offset = offset; \
+	unsigned int bit_index = bit_num; \
+	exynos_5410_gpio_write_mask(bank_offset, ((data & 1U) << bit_index), (1U << bit_index)); \
+}
+EXYNOS_5410_GPIO_PINS
+#undef EXYNOS_5410_GPIO_PIN

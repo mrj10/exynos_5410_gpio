@@ -1,6 +1,26 @@
 #ifndef __EXYNOS_5410_GPIO_H__
 #define __EXYNOS_5410_GPIO_H__
 
+//X-macro consisting of (CON10 pin number,
+//                       data register offset from EXYNOS_5410_GPIO_REG_BASE_ADDR,
+//						 data register bit offset) tuples
+#define EXYNOS_5410_GPIO_PINS \
+	EXYNOS_5410_GPIO_PIN(13, 0x0C20, 5) \
+	EXYNOS_5410_GPIO_PIN(14, 0x0C40, 3) \
+	EXYNOS_5410_GPIO_PIN(15, 0x0C20, 2) \
+	EXYNOS_5410_GPIO_PIN(16, 0x0C20, 0) \
+	EXYNOS_5410_GPIO_PIN(17, 0x0C20, 6) \
+	EXYNOS_5410_GPIO_PIN(18, 0x0C20, 3) \
+	EXYNOS_5410_GPIO_PIN(19, 0x0C40, 6) \
+	EXYNOS_5410_GPIO_PIN(20, 0x0C40, 4) \
+	EXYNOS_5410_GPIO_PIN(21, 0x0C40, 5) \
+	EXYNOS_5410_GPIO_PIN(22, 0x0C40, 7) \
+	EXYNOS_5410_GPIO_PIN(23, 0x0C40, 2) \
+	EXYNOS_5410_GPIO_PIN(24, 0x0C40, 1) \
+	EXYNOS_5410_GPIO_PIN(25, 0x0C20, 7) \
+	EXYNOS_5410_GPIO_PIN(26, 0x0C40, 0) \
+	EXYNOS_5410_GPIO_PIN(27, 0x0C60, 1)
+
 //Caller should avoid calling this if exynos_5410_gpio_initialized is 1.
 void exynos_5410_gpio_init();
 void exynos_5410_gpio_destroy();
