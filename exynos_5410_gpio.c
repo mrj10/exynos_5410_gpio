@@ -12,6 +12,10 @@
 #include <stdint.h>
 #include "exynos_5410_gpio.h"
 
+//TODO add a persistent struct that the user passes in for most calls and contains shadow GPIO register state.
+//We could also keep the struct internal to the library.
+//The objective is to perform masked writes and so forth without having to do a slow GPIO read.
+
 #define EXYNOS_5410_GPIO_REG_BASE_ADDR 0x13400000
 // For a given bank of GPIOs, the registers are laid out in memory as: CON DATA UPD DRIVESTR
 #define EXYNOS_GPIO_CON_REG_OFFSET 0 //CON (data direction) register
