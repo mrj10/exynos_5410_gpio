@@ -63,7 +63,7 @@ EXYNOS_5410_GPIO_PINS
 EXYNOS_5410_GPIO_PINS
 #undef EXYNOS_5410_GPIO_PIN
 
-#define EXYNOS_5410_GPIO_PIN(pin_num, offset, bit_num) void EXYNOS_5410_GPIO_CAT(odroid_xu_gpio_toggle_write_, pin_num) (unsigned int data);
+#define EXYNOS_5410_GPIO_PIN(pin_num, offset, bit_num) void EXYNOS_5410_GPIO_CAT(odroid_xu_gpio_write_, pin_num) (unsigned int data);
 EXYNOS_5410_GPIO_PINS
 #undef EXYNOS_5410_GPIO_PIN
 

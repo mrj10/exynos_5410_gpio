@@ -39,26 +39,32 @@ int main(int argc, char *argv[]) {
 	//print_all_gpio_info();
 	odroid_xu_gpio_setup_all_output();
 	//print_all_gpio_info();
-	//Method 1 -- Using the library's helper functions
+	//Method 1 -- Using the library's helper functions, ~20 seconds
 	//for(int i = 0; i < 10000000; i++)
 	//	odroid_xu_gpio_toggle(27);
 
-	//Method 2 -- Write 0 and 1 directly to avoid register read
+	//Method 2 -- Write 0 and 1 directly to avoid register read, ~13 seconds
 	//odroid_xu_gpio_write(27, 1);
 	//for(int i = 0; i < 5000000; i++) {
 	//	odroid_xu_gpio_write(27, 0);
 	//	odroid_xu_gpio_write(27, 1);
 	//}
 
-	//Method 3 -- Memoizing the offset and other bits in the register and just performing register writes
-	//(Should be faster)
-	 unsigned int regval = exynos_5410_gpio_read_raw_reg(0x0C60 + EXYNOS_GPIO_DATA_REG_OFFSET);
-	 for(int i = 0; i < 5000000; i++) {
-	 	exynos_5410_gpio_write_raw_reg(0x0C60 + EXYNOS_GPIO_DATA_REG_OFFSET, regval ^ (1U << 1));
-	 	exynos_5410_gpio_write_raw_reg(0x0C60 + EXYNOS_GPIO_DATA_REG_OFFSET, regval);
-	 }
+	//Method 3 -- Use specialized library function for pin 27 in particular, ~13 seconds
+        //odroid_xu_gpio_write_27(1);
+        //for(int i = 0; i < 5000000; i++) {
+        //      odroid_xu_gpio_write_27(0);
+        //      odroid_xu_gpio_write_27(1);
+        //}
 
-	//Method 4 -- Eliminate library call
+	//Method 4 -- Memoizing the offset and other bits in the register and just performing register writes, ~5 seconds
+	//unsigned int regval = exynos_5410_gpio_read_raw_reg(0x0C60 + EXYNOS_GPIO_DATA_REG_OFFSET);
+	//for(int i = 0; i < 5000000; i++) {
+	// 	exynos_5410_gpio_write_raw_reg(0x0C60 + EXYNOS_GPIO_DATA_REG_OFFSET, regval ^ (1U << 1));
+	// 	exynos_5410_gpio_write_raw_reg(0x0C60 + EXYNOS_GPIO_DATA_REG_OFFSET, regval);
+	//}
+
+	//Method 5 -- Eliminate library call altogether, ~5 seconds
 #if 0
 	unsigned int regval1 = exynos_5410_gpio_read_raw_reg(0x0C60 + EXYNOS_GPIO_DATA_REG_OFFSET);
 	unsigned int regval2 = regval1 ^ (1U << 1);
