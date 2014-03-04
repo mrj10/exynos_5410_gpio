@@ -28,6 +28,8 @@
 #define ENABLE_PULLDOWN 0x1 // PD resistor
 #define ENABLE_PULLUP 0x2 // PU resistor
 
+#define EXYNOS_5410_GPIO_LOCKFILE "/var/lock/exynos_5410_gpio"
+
 #define FATAL do { fprintf(stderr, "Error at line %d, file %s (%d) [%s]\n", \
 __LINE__, __FILE__, errno, strerror(errno)); exit(1); } while(0)
 
@@ -36,25 +38,34 @@ __LINE__, __FILE__, errno, strerror(errno)); exit(1); } while(0)
 
 static int exynos_5410_gpio_initialized = 0;
 static void *exynos_5410_gpio_mapbase;
+static int exynos_5410_gpio_lockfile_fd;
 
 //Caller should avoid calling this if exynos_5410_gpio_initialized is 1.
 void exynos_5410_gpio_init() {
   int fd;
 
+  //Check to make sure we haven't already initialized the library in this process
   if(exynos_5410_gpio_initialized != 0) FATAL;
+
+  //Attempt to create lock file; if it's already been created, another process
+  //has control of the GPIOs and we should fail
+  if((exynos_5410_gpio_lockfile_fd = open(EXYNOS_5410_GPIO_LOCKFILE, O_CREAT | O_EXCL) == -1) FATAL;
 
   if((fd = open("/dev/mem", O_RDWR | O_SYNC)) == -1) FATAL;
 
   exynos_5410_gpio_mapbase = mmap(0, MAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, EXYNOS_5410_GPIO_REG_BASE_ADDR & ~MAP_MASK);
   if(exynos_5410_gpio_mapbase == (void *) -1) FATAL;
 
-  close(fd);
+  close(fd); //close /dev/mem
   exynos_5410_gpio_initialized = 1;
 }
 
 void exynos_5410_gpio_destroy() {
   if(exynos_5410_gpio_initialized != 1) FATAL;
   if(munmap(exynos_5410_gpio_mapbase, MAP_SIZE) == -1) FATAL;
+  //Unlink and close lockfile.  The close() will delete it from the filesystem
+  if(unlink(EXYNOS_5410_GPIO_LOCKFILE) == -1) FATAL;
+  if(close(exynos_5410_gpio_lockfile_fd) == -1) FATAL;
   exynos_5410_gpio_initialized = 0;
 }
 
