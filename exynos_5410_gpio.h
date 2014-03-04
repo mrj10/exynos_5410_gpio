@@ -21,8 +21,8 @@
 	EXYNOS_5410_GPIO_PIN(26, 0x0C40, 0) \
 	EXYNOS_5410_GPIO_PIN(27, 0x0C60, 1)
 
-#define EXYNOS_5410_GPIO_CATHELPER(x, y) x ## y
-#define EXYNOS_5410_GPIO_CAT(x, y) EXYNOS_5410_GPIO_CATHELPER(x, y)
+#define EXYNOS_5410_GPIO_CATHELPER(x, y, z) x ## y ## z
+#define EXYNOS_5410_GPIO_CAT(x, y, z) EXYNOS_5410_GPIO_CATHELPER(x, y, z)
 
 //Caller should avoid calling this if exynos_5410_gpio_initialized is 1.
 void exynos_5410_gpio_init();
@@ -55,15 +55,15 @@ void odroid_xu_gpio_setup_all_output();
 void odroid_xu_gpio_setup_all_input(unsigned int pullup);
 void odroid_xu_gpio_toggle(unsigned int pin_index);
 
-#define EXYNOS_5410_GPIO_PIN(pin_num, offset, bit_num) void EXYNOS_5410_GPIO_CAT(odroid_xu_gpio_toggle_, pin_num) ## ();
+#define EXYNOS_5410_GPIO_PIN(pin_num, offset, bit_num) void EXYNOS_5410_GPIO_CAT(odroid_xu_gpio_toggle_, pin_num, ());
 EXYNOS_5410_GPIO_PINS
 #undef EXYNOS_5410_GPIO_PIN
 
-#define EXYNOS_5410_GPIO_PIN(pin_num, offset, bit_num) unsigned int EXYNOS_5410_GPIO_CAT(odroid_xu_gpio_read_, pin_num) ## pin_num ## ();
+#define EXYNOS_5410_GPIO_PIN(pin_num, offset, bit_num) unsigned int EXYNOS_5410_GPIO_CAT(odroid_xu_gpio_read_, pin_num, ());
 EXYNOS_5410_GPIO_PINS
 #undef EXYNOS_5410_GPIO_PIN
 
-#define EXYNOS_5410_GPIO_PIN(pin_num, offset, bit_num) void EXYNOS_5410_GPIO_CAT(odroid_xu_gpio_toggle_write_, pin_num) ## (unsigned int data);
+#define EXYNOS_5410_GPIO_PIN(pin_num, offset, bit_num) void EXYNOS_5410_GPIO_CAT(odroid_xu_gpio_toggle_write_, pin_num, (unsigned int data));
 EXYNOS_5410_GPIO_PINS
 #undef EXYNOS_5410_GPIO_PIN
 
