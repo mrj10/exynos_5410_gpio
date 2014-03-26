@@ -48,7 +48,9 @@ __attribute__((constructor)) static void exynos_5410_gpio_init() {
 
   //Attempt to create lock file; if it's already been created, another process
   //has control of the GPIOs and we should fail
-  if((exynos_5410_gpio_lockfile_fd = open(EXYNOS_5410_GPIO_LOCKFILE, O_CREAT | O_EXCL) == -1) FATAL;
+  //NOTE: The *existence* of the lockfile is the lock; we don't use fcntl() or flock()-based locks on top of the file itself.
+  //This avoids the atomicity problem in file creation/locking
+  if((exynos_5410_gpio_lockfile_fd = open(EXYNOS_5410_GPIO_LOCKFILE, O_CREAT | O_EXCL, 0666)) == -1) FATAL;
 
   if((fd = open("/dev/mem", O_RDWR | O_SYNC)) == -1) FATAL;
 

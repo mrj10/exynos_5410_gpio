@@ -24,10 +24,6 @@
 #define EXYNOS_5410_GPIO_CATHELPER(x, y) x ## y
 #define EXYNOS_5410_GPIO_CAT(x, y) EXYNOS_5410_GPIO_CATHELPER(x, y)
 
-//Caller should avoid calling this if exynos_5410_gpio_initialized is 1.
-void exynos_5410_gpio_init();
-void exynos_5410_gpio_destroy();
-
 // Useful only for library developers, returns a raw register value (from the mapped page)
 unsigned int exynos_5410_gpio_read_raw_reg(unsigned int offset);
 // Write a raw register value (from the mapped page)

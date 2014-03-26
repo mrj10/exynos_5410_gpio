@@ -1,4 +1,4 @@
-PROJECT = exynos_5410_gpio.a
+PROJECT = libexynos_5410_gpio.a
 OBJECTS = exynos_5410_gpio.o
 CFLAGS  = -std=gnu99 -Wall -pedantic -Werror -O3 -mcpu=cortex-a15 -mfpu=neon-vfpv4 -I../enable_arm_pmu
 
