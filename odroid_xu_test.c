@@ -2,7 +2,6 @@
 #include <stdint.h>
 #include <inttypes.h>
 #include "exynos_5410_gpio.h"
-#include "armpmu_lib.h"
 
 #define EXYNOS_5410_GPIO_REG_BASE_ADDR 0x13400000
 // For a given bank of GPIOs, the registers are laid out in memory as: CON DATA UPD DRIVESTR
@@ -56,12 +55,7 @@ int main(int argc, char *argv[]) {
 	unsigned int regval1 = exynos_5410_gpio_read_raw_reg(0x0C60 + EXYNOS_GPIO_DATA_REG_OFFSET);
 	unsigned int regval2 = regval1 ^ (1U << 1);
 	volatile unsigned int *dataregaddr = (volatile unsigned int *)((unsigned int)exynos_5410_gpio_get_map_base() + 0x0C60 + EXYNOS_GPIO_DATA_REG_OFFSET);
-	uint32_t t1, t2 = 0;
 	for(int i = 0; i < 1000000; i++) {
-		t1 = rdtsc32();
-		if(t2 != 0)
-			printf("iteration %d, %" PRIu32 " cycles, %f cycles/write\n", i, t2-t1, (float)((t2-t1)/16));
-		t2 = t1;
 		*dataregaddr = regval1;
 		*dataregaddr = regval2;
 		*dataregaddr = regval1;
